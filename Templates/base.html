@@ -1,0 +1,306 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en-us"><head>
+  <meta charset="utf-8">
+  <title> {% block title %}{% endblock title %} -FlimBD</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content= "{% block metadescription %}
+  
+  {% endblock metadescription %}">
+  <meta name="author" content="{% block author %}{% endblock author %}-FlimBD">
+  <meta name="generator" content="Hugo 0.74.3" />
+
+  <!-- plugins -->
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="{% static 'Css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'Css/themify-icons.css'%}">
+  <link rel="stylesheet" href="{% static 'Css/slick.css'%}">
+  <link rel="canonical" href="{% block canonical %}
+  
+  {% endblock canonical %}" />
+
+
+  
+  <script src="https://kit.fontawesome.com/da20307949.js" crossorigin="anonymous"></script>
+ 
+
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="{% static 'Css/style.css'%}" media="screen">
+
+  <!--Favicon-->
+  <link rel="shortcut icon" href="{% static 'images/logo.png'%}" type="image/x-icon">
+  <link rel="icon" href="{% static 'images/logo.png'%}" type="image/x-icon">
+
+  <meta property="og:title" content="Reader | Hugo Personal Blog Template" />
+  <meta property="og:description" content="This is meta description" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="" />
+  <meta property="og:updated_time" content="2020-03-15T15:40:24+06:00" />
+
+  <style>
+    /* Custom CSS for autocomplete dropdown */
+    .ui-autocomplete {
+      position: absolute;
+      z-index: 1051 !important; /* Ensure the dropdown is above other elements */
+      background-color: #fff; /* Match the input background */
+      border: 1px solid #ccc; /* Match the input border */
+      max-height: 200px; /* Limit the height if many suggestions */
+      overflow-y: auto; /* Scroll if there are too many suggestions */
+      /* Adjust width as necessary */
+    }
+  </style>
+</head>
+<body>
+  <!-- navigation -->
+<header class="navigation fixed-top">
+  <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-white">
+      <a class="navbar-brand order-1" href="/">
+        <img class="img-fluid" width="100px" src="{% static 'images/logo.png'%}"
+          alt="Reader | Hugo Personal Blog Template">
+      </a>
+      <div class="collapse navbar-collapse text-center order-lg-2 order-3" id="navigation">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">homepage</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">posts</a>
+          </li>
+          
+          
+
+
+          <li class="nav-item">
+            <a class="nav-link" href='{% url "aboutus" %}'>About Us</a>
+          </li>
+         
+
+          <li class="nav-item">
+            <a class="nav-link" href='{% url "contactus" %}'>Contact</a>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Pages <i class="ti-angle-down ml-1"></i>
+            </a>
+            <div class="dropdown-menu">
+              
+              <a class="dropdown-item" href='{% url "authors" %}'>Author</a>
+              
+              <a class="dropdown-item" href= '{% url "privacypolicy" %}'>Privacy Policy</a>
+              </div>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">Profile <i class="ti-angle-down ml-1"></i>
+            </a>
+            <div class="dropdown-menu">
+              {% if request.user.is_authenticated %}
+                  {% if request.user|check_can_pulish %}
+                  <a class="dropdown-item" href='{% url "post_create" %}'>GURU Viewpoint</a>
+                  {% else %}
+                  <a class="dropdown-item" href='{% url "make_author" %}'>Advanced to Guru Level</a>
+                  {% endif %}
+                  <a class="dropdown-item" href='{% url "logout" %}'>Logout</a>
+              {% else %}
+                  <a class="dropdown-item" href='{% url "logout" %}'>Login</a>
+                  <div class='text-center'><mark class='text-center'><strong>OR</strong></mark></div>
+                  <a class="dropdown-item" href='{% url "register" %}'>Register</a>
+                  
+                  
+              {% endif %}
+              </div>
+          </li>
+
+          
+        </ul>
+      </div>
+
+      <div class="order-2 order-lg-3 d-flex align-items-center">
+        <select class="m-2 border-0 bg-transparent" id="select-language">
+          <option id="en" value="" selected>En</option>
+          <option id="fr" value="">Fr</option>
+        </select>
+        
+        <!-- search -->
+        <form class="search-bar" action= '{% url "search" %}' method="POST" >
+          {% csrf_token %}
+          {% if src_req %}
+          <input id="search-query" name="search" type="search" value='{{src_req}}'>
+          {% else %}
+          <input id="search-query" name="search" type="search" placeholder="Type & Hit Enter...">
+          {% endif %}
+          
+        </form>
+        
+        <button class="navbar-toggler border-0 order-1" type="button" data-toggle="collapse" data-target="#navigation">
+          <i class="ti-menu"></i>
+        </button>
+      </div>
+
+    </nav>
+  </div>
+</header>
+<!-- header end -->
+
+{% block content %}{% endblock content %}
+
+
+<!-- /navigation -->
+<footer class="footer">
+    <svg class="footer-border" height="214" viewBox="0 0 2204 214" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2203 213C2136.58 157.994 1942.77 -33.1996 1633.1 53.0486C1414.13 114.038 1200.92 188.208 967.765 118.127C820.12 73.7483 263.977 -143.754 0.999958 158.899"
+        stroke-width="2" />
+    </svg>
+    
+    <div class="instafeed text-center mb-5">
+        <h2 class="h3 mb-4">INSTAGRAM POST</h2>
+        
+        <div class="instagram-slider">
+          <div class="instagram-post"><img src="{% static 'images/instagram/1.jpg'%}"></div>
+          <div class="instagram-post"><img src="{% static 'images/instagram/2.jpg'%}"></div>
+          <div class="instagram-post"><img src="{% static 'images/instagram/4.jpg'%}"></div>
+          <div class="instagram-post"><img src="{% static 'images/instagram/3.jpg'%}"></div>
+          <div class="instagram-post"><img src="{% static 'images/instagram/2.jpg'%}"></div>
+          <div class="instagram-post"><img src="{% static 'images/instagram/1.jpg'%}"></div>
+          <div class="instagram-post"><img src="{% static 'images/instagram/3.jpg'%}"></div>
+          <div class="instagram-post"><img src="{% static 'images/instagram/4.jpg'%}"></div>
+          <div class="instagram-post"><img src="{% static 'images/instagram/2.jpg'%}"></div>
+          <div class="instagram-post"><img src="{% static 'images/instagram/4.jpg'%}"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="row align-items-center">
+        <div class="col-md-5 text-center text-md-left mb-4">
+            <ul class="list-inline footer-list mb-0">
+              <li class="list-inline-item"><a href='{% url "privacypolicy" %}'>Privacy Policy</a></li>
+              <li class="list-inline-item"><a href='{% url "aboutus" %}'>About US</a></li>
+              <li class="list-inline-item"><a href='{% url "contactus" %}'>Contact US</a></li>
+            </ul>
+        </div>
+        <div class="col-md-2 text-center mb-4">
+            <a href="/"><img class="img-fluid" width="100px" src="{% static 'images/logo.png'%}" alt="Reader | Hugo Personal Blog Template"></a>
+        </div>
+        <div class="col-md-5 text-md-right text-center mb-4">
+            <ul class="list-inline footer-list mb-0">
+            
+            <li class="list-inline-item"><a href="#"><i class="ti-facebook"></i></a></li>
+            
+            <li class="list-inline-item"><a href="#"><i class="ti-twitter-alt"></i></a></li>
+            
+            <li class="list-inline-item"><a href="#"><i class="ti-linkedin"></i></a></li>
+            
+            <li class="list-inline-item"><a href="#"><i class="ti-github"></i></a></li>
+            
+            <li class="list-inline-item"><a href="#"><i class="ti-youtube"></i></a></li>
+            
+            </ul>
+        </div>
+        <div class="col-12">
+            <div class="border-bottom border-default"></div>
+        </div>
+        </div>
+    </div>
+    </footer>
+  
+  
+    <!-- JS Plugins -->
+    <script src="{% static 'js/jquery.min.js'%}"></script>
+    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.js"></script>
+<script>
+$(function() {
+  
+  $("#search-query").autocomplete({
+    source: '{% url "autocomplete" %}',
+    open: function() {
+      var $input = $(this);
+      var $autocomplete = $input.autocomplete("widget");
+      $autocomplete.css("width", $input.outerWidth() + "px");
+    }
+  });
+  $("#search-query1").autocomplete({
+    source: '{% url "autocomplete" %}',
+    open: function() {
+      var $input = $(this);
+      var $autocomplete = $input.autocomplete("widget");
+      $autocomplete.css("width", $input.outerWidth() + "px");
+    }
+  });
+
+});
+$(document).ready(function() {
+  // Function to handle the click event for the "See More" button
+  function handleLoadMoreClick() {
+    var _cresult = $(".rcp").length;
+    var $loadMoreButton = $("#loadmore");
+
+    $.ajax({
+      url: '{% url "seemore" %}',
+      type: 'POST',
+      data: {
+        'offset': _cresult,
+        'recent_posts': 'recent_posts',
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+      },
+      beforeSend: function() {
+        console.log("Sending request");
+        $loadMoreButton.removeClass('btn-primary');
+        $loadMoreButton.attr('disabled', true).html('<span class="spinner-border text-primary" role="status" aria-hidden="true"></span>');
+      },
+      success: function(res) {
+        console.log("Response received");
+        console.log(res);
+
+        // Check if the response contains an error
+        if (res.error) {
+          console.error("Error: " + res.error);
+          $loadMoreButton.addClass('btn-primary');
+          $loadMoreButton.attr('disabled', false).text("See More");
+          return;
+        }
+
+        // Remove the button temporarily
+        $loadMoreButton.remove();
+
+        // Append the returned HTML content to the existing container
+        $('#post-container').append(res.html);
+
+        // Re-add the "See More" button at the end of the new content
+        if ($(".rcp").length < res.total_post) {
+          $('#post-container').append('<div class="text-center"><button id="loadmore" class="btn btn-primary">SEE MORE</button></div>');
+        }
+
+        // Reattach the click event handler to the new button
+        $("#loadmore").on('click', handleLoadMoreClick);
+      },
+      error: function(xhr, status, error) {
+        console.error("Error: " + error);
+        $loadMoreButton.addClass('btn-primary');
+        $loadMoreButton.attr('disabled', false).text("See More");
+      }
+    });
+  }
+
+  // Initial attachment of the click event handler
+  $("#loadmore").on('click', handleLoadMoreClick);
+});
+</script>
+  
+  
+    <script src="{% static 'js/bootstrap.min.js'%}"></script>
+  
+    <script src="{% static 'js/slick.min.js'%}"></script>
+  
+    
+  
+  
+    <!-- Main Script -->
+    <script src="{% static 'js/script.js'%}"></script></body>
+  </html>

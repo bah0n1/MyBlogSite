@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock title %}
+{% block content %}
+<hr>
+<hr>
+<h1 class='h2 text-center'>Register <mark>Guru</mark></h1>
+
+<div class='container'>
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-secondary alert-dismissible fade show" role="alert" style="bottom: 25px;">
+            <strong>Hey Guru!</strong> {{ message }} 
+            <a style="text-decoration: underline; text-decoration-color: red;" class='text-danger' href='{% url "privacypolicy" %}'>reset it.</a>
+            <mark>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </mark>
+        </div>
+        {% endfor %}
+    {% endif %}
+    
+    <form id="loginForm" method="post" enctype="multipart/form-data" style="margin-top: 50px;">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            <label>{{ field.label_tag }}</label>
+            {{ field }}
+            {% if field.help_text %}
+            <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+            {% for error in field.errors %}
+            <div class="alert alert-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+    </form>
+    
+</div>
+
+<hr>
+<hr>
+
+
+
+{% endblock content %}

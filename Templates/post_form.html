@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% load static %}
+{% block title %}Post{% endblock title %}
+{% block content %}
+<hr>
+<hr>
+<div class="container ">
+<h1>{{ form.instance.pk|yesno:"Edit Post,New Post" }}</h1>
+<form method="post" enctype="multipart/form-data">
+  {% if messages %}
+        {% for message in messages %}
+            <p><strong class="text-danger">{{ message }}</strong></p>
+        {% endfor %}
+    {% endif %}
+  <label for="basic-url">Your Post URL</label>
+<div class="input-group mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="basic-addon3">https://guruiknow.com/post/tag/</span>
+  </div>
+  <input type="text" class="form-control" required id="url" name="url" value='{{fm.url}}'aria-describedby="basic-addon3"
+  pattern="[a-zA-Z0-9-_]{1,30}" maxlength="30" title="URL must be 30 characters or less and only include letters and numbers">
+</div>
+
+<div class="form-group">
+  <label >Title</label>
+  <input type="text" class="form-control" required id="titel" name="titel" value='{{fm.titel}}' placeholder="Your Post Title....">
+</div>
+
+<div class="form-group">
+  <label >Meta description</label>
+  <textarea class="form-control" name='meta_description' placeholder="A meta description is a short summary of a post that appears in search engine results." required id="meta_description" rows="2">{{fm.meta_description}}</textarea>
+</div>
+{% comment %} first {% endcomment %}
+<div>
+  <div class="mb-4 d-flex justify-content-center">
+    <img id="selectedImage" src="{% static 'images/backgrounds/upload_image.png' %}"
+         alt="example placeholder" class="card-img" />
+  </div>
+  <div class="d-flex justify-content-center">
+    <div data-mdb-ripple-init class="btn btn-primary btn-rounded">
+      <label class="form-label text-white m-1" for="customFile1">Choose Image</label>
+      <input type="file" class="form-control visually-hidden" name='image' required id="customFile1" accept="image/*"
+             onchange="displaySelectedImage(event, 'selectedImage')" />
+    </div>
+  </div>
+</div>
+
+
+
+
+  {% csrf_token %}
+  {{ form.media }}
+
+  {{ form.as_p }}
+  <div class="form-group">
+    <label for="categorySelect">Categories select</label>
+    <select class="form-control" id="categories"  name= 'categories'required>
+      <option value="" disabled {% if not fm.categories %}selected{% endif %}>Categories</option>
+      {% for cat  in cato %}
+      <option value="{{cat.id}}" {% if fm.categories == '{{cat.id}}' %}selected{% endif %}>{{cat.name}}</option>
+      {% endfor %}
+    </select>
+</div>
+
+<div class="form-group">
+  <label >Add #tags</label>
+  <select multiple required class="form-control" id="tags" name="tags">
+    {% for tag in tago %}
+      <option value="{{ tag.id }}" 
+              {% if tag.id|stringformat:"s" in selected_tags %}selected{% endif %}>
+        #{{ tag.name }}
+      </option>
+    {% endfor %}
+  </select>
+</div>
+
+
+
+<div class="text-center " ><button type='submit'   class="btn btn-primary"><span class="text-dark">Guru </span><i class="fas fa-bullhorn fa-lg" style="color: #000000;"></i> <span class="text-dark">--- </span></button></div>
+</form>
+</div>
+<hr>
+<hr>
+<script>
+  ///images
+  document.querySelector('.btn-primary').addEventListener('click', function() {
+    document.getElementById('customFile1').click();
+  });
+
+  function displaySelectedImage(event, elementId) {
+    const selectedImage = document.getElementById(elementId);
+    const fileInput = event.target;
+
+    if (fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+
+      reader.onload = function(e) {
+        selectedImage.src = e.target.result;
+      };
+
+      reader.readAsDataURL(fileInput.files[0]);
+    }
+  }
+
+
+///tags
+document.addEventListener('DOMContentLoaded', (event) => {
+  const selectElement = document.getElementById('tags');
+
+  selectElement.addEventListener('change', (e) => {
+    const selectedOptions = Array.from(selectElement.selectedOptions);
+    if (selectedOptions.length > 4) {
+      selectedOptions[selectedOptions.length - 1].selected = false; // Deselect the last selected option
+      alert('You can only select up to 4 tags.');
+    }
+  });
+});
+
+///url
+
+  document.getElementById('url').addEventListener('input', function () {
+    const input = this;
+    const value = input.value;
+
+    // Validate the URL format
+    const regex = /^[a-zA-Z0-9-]{1,30}$/;
+    if (value.length > 30 || !regex.test(value)) {
+      input.setCustomValidity('URL must be 30 characters or less and only include letters, numbers, and hyphens.');
+    } else {
+      input.setCustomValidity('');
+    }
+  });
+  
+  ///title
+  document.getElementById('titel').addEventListener('input', function () {
+    const input = this;
+    const value = input.value;
+
+    // Check length constraints
+    if (value.length < 10 || value.length > 60) {
+      input.setCustomValidity('Title must be between 10 and 60 characters long.');
+    } else {
+      input.setCustomValidity('');
+    }
+  });
+
+  document.getElementById('meta_description').addEventListener('input', function () {
+    const input = this;
+    const value = input.value;
+  
+    // Check length constraints
+    if (value.length < 120) {
+      input.setCustomValidity("You need to add " + (120 - value.length) + " more characters.");
+    } else if (value.length > 160) {
+      input.setCustomValidity("Meta descriptions must be between 120 and 160 characters long. They improve your post's rank on search engines.");
+    } else {
+      input.setCustomValidity('');
+    }
+  
+    // Prevent further input if length exceeds 160
+    if (value.length > 160) {
+      input.value = value.substring(0, 160);
+    }
+  });
+</script>
+{% endblock content %}
